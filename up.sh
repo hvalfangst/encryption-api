@@ -16,8 +16,20 @@ echo
 echo -e "\n\n"
 
 
-# Create our deployment and service resources
-kubectl apply -f manifest.yaml > /dev/null 2>&1
+# Prompt user for encryption key
+read -p "Enter desired encryption key: " encryption_key
+
+echo -e "\n\n"
+
+# Base64 encode the encryption key
+encoded_key=$(echo -n "$encryption_key" | base64 | tr -d '\n')
+
+# Set field encryption-key in secrets.yaml to point to the recently encoded key
+sed -i "s|^\(.*encryption_key: \)\(.*\)|\1$encoded_key|" k8s/secrets.yaml
+
+# Create our secret, deployment and service resources
+kubectl apply -f k8s/secrets.yaml > /dev/null 2>&1
+kubectl apply -f k8s/manifest.yaml > /dev/null 2>&1
 
 echo "Creating resources defined in manifest.yaml"
 bar_length=50

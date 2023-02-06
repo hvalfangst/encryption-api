@@ -2,8 +2,8 @@
 
 echo
 
-kubectl delete -f manifest.yaml > /dev/null 2>&1
-wait
+kubectl delete -f k8s/secrets.yaml > /dev/null 2>&1
+kubectl delete -f k8s/manifest.yaml > /dev/null 2>&1
 
 echo "Deleting resources defined in manifest.yaml"
 bar_length=50

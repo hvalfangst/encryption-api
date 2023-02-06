@@ -9,4 +9,4 @@ RUN pip install -r requirements.txt
 # Expose the Docker container for the application to run on port 5000 and set up automatic port-forwarding
 EXPOSE 5000:5000
 # Run the application using python
-CMD ["python", "/app/encryption_service.py"]
+CMD ["python", "/app/main.py"]
