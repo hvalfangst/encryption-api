@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: encryption-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hvalfangst
+  template:
+    metadata:
+      labels:
+        app: hvalfangst
+    spec:
+      containers:
+      - name: encryption-service
+        image: hardokkerdocker/hvalfangst:encryption-service
+        ports:
+        - containerPort: 5000
+---        
+apiVersion: v1
+kind: Service
+metadata:
+  name: entrypoint
+spec:
+  selector:
+    app: hvalfangst
+  ports:
+    - name: encryption-service
+      port: 5000
+      targetPort: 5000
+  type: LoadBalancer
