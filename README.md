@@ -1,4 +1,4 @@
-# WSGI compliant Flask encryption API served with NGINX
+# Gunicorn Flask encryption API with NGINX front
 
 Provides endpoints for encrypting and decrypting using AES in CBC mode with PBKDF2 key derivation. 
 
