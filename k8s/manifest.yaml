@@ -3,6 +3,36 @@ kind: Deployment
 metadata:
   name: encryption-service
 spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hvalfangst
+  template:
+    metadata:
+      labels:
+        app: hvalfangst
+    spec:
+      containers:
+        - name: encryption-service
+          image: hardokkerdocker/hvalfangst:encryption-service
+          ports:
+            - containerPort: 5000
+          env:
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: encryption-key
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
   replicas: 1
   selector:
     matchLabels:
@@ -13,16 +43,18 @@ spec:
         app: hvalfangst
     spec:
       containers:
-      - name: encryption-service
-        image: hardokkerdocker/hvalfangst:encryption-service
-        ports:
-        - containerPort: 5000
-        env:
-          - name: ENCRYPTION_KEY
-            valueFrom:
-              secretKeyRef:
-                name: secrets
-                key: encryption-key
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-config
+          configMap:
+           name: nginx-config
 ---
 apiVersion: v1
 kind: Service
@@ -32,7 +64,13 @@ spec:
   selector:
     app: hvalfangst
   ports:
-    - name: encryption-service
+    - name: entry
+      port: 5001
+      targetPort: 80
+    - name: nginx
+      port: 80
+      targetPort: 80
+    - name: encryption-api
       port: 5000
       targetPort: 5000
   type: LoadBalancer

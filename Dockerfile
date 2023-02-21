@@ -4,6 +4,8 @@ FROM python:3.10-alpine
 WORKDIR /app
 # Copying all the application files to the working directory
 COPY . .
+
+WORKDIR /app/python
 # Install all the dependencies required to run the Flask application
 RUN pip install -r requirements.txt
 # Expose the Docker container for the application to run on port 5000 and set up automatic port-forwarding

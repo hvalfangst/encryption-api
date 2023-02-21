@@ -42,8 +42,6 @@ def aesCbcPbkdf2DecryptFromBase64(password, ciphertextBase64):
     iv = base64Decoding(data[1])
 
     ciphertext = base64Decoding(data[2])
-    print("ciphertext: ")
-    print(ciphertext)
     PBKDF2_ITERATIONS = 15000
     decryptionKey = PBKDF2(
         passwordBytes, salt, 32, count=PBKDF2_ITERATIONS, hmac_hash_module=SHA256
