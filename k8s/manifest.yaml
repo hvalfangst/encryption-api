@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: encryption-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: hvalfangst
@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: encryption-service
-          image: hardokkerdocker/hvalfangst:encryption-service
+          image: hardokkerdokker/hvalfangst:encryption-service
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           env:
@@ -27,6 +28,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+        - name: redis-master
+          image: redis
+          ports:
+            - containerPort: 6379
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -64,9 +69,6 @@ spec:
   selector:
     app: hvalfangst
   ports:
-    - name: entry
-      port: 5001
-      targetPort: 80
     - name: nginx
       port: 80
       targetPort: 80

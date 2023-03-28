@@ -1,37 +1,66 @@
 # Gunicorn Flask encryption API with NGINX reverse proxy
 
-Provides endpoints for encrypting and decrypting using AES in CBC mode with PBKDF2 key derivation. 
+Provides endpoints for encrypting and decrypting using AES in CBC mode with PBKDF2 key derivation
 
 ## Requirements
 
-* x86-64
-* Linux
 * Docker
-* k8s
+* Kubernetes cluster
+
+##
 
 ## Creating resources
-The shell script "up.sh" is responsible for building the local Docker image and creating requested resources, which are defined in our k8s manifest.
-
+The shell script "up.sh" is responsible for building the local Docker image and creating resources
 ```
 sh up.sh
 ```
 
-## Destroying resources
-The shell script "down.sh" frees up allocated resources.
+
+## Port forwarding
+The following command will reroute requests from local port 6666 to that of port 80 of the nginx pod
+```
+kubectl port-forward deployments/nginx 6666:80
+```
+
+## Deleting resources
+The shell script "down.sh" frees up allocated resources
 
 ```
 sh down.sh
 ```
 
 ## Endpoints
-Once you have executed the shell script "up.sh" you are ready to test the API. 
+
+---
+
+### Encrypt (raw body: text), (bearer token) -> ciphertext
+
+POST http://localhost:6666/encrypt
+
+### Decrypt (raw body: ciphertext), (bearer token) -> text
 
 
-### Encrypt (raw body: text) -> ciphertext
+POST http://localhost:6666/decrypt
 
-POST http://localhost:5001/encrypt
+---
 
-### Decrypt (raw body: ciphertext) -> text
+### Create User (json body: {username, password}) -> text
+
+POST http://localhost:6666/users
+
+### List Users -> JSON
 
 
-POST http://localhost:5001/decrypt
+GET http://localhost:6666/users
+
+### Delete User (json body: {username, password}) -> text
+
+DELETE http://localhost:6666/users
+
+---
+
+### Login (json body: {username, password}) -> Token
+
+POST http://localhost:6666/login
+
+

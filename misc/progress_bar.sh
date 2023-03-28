@@ -4,6 +4,8 @@ bar_length=50
 bar_char="="
 sleep_time=$1
 
+printf "\n\n"
+
 for i in $(seq 1 10); do
   progress=$((i * 10))
   progress_bar=""
@@ -14,6 +16,8 @@ for i in $(seq 1 10); do
   for k in $(seq 1 $spaces); do
     progress_bar="$progress_bar "
   done
-  echo -ne "\r[$progress_bar] $progress %"
-  sleep $sleep_time
+  printf "\r[%s] %s %%" "$progress_bar" "$progress"
+  sleep "$sleep_time"
 done
+
+printf "\n\n"
